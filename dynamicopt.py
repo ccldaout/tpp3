@@ -200,10 +200,11 @@ class Option(object):
 
     def __unmap(self):
         if self.__mobj:
+            mo = self.__mobj
             self.__cobj = self.__cobj.dup()
-            self.__mobj.close()
             self.__mobj = None
             self.__remake_py_attr()
+            mo.close()
 
     # ---- Fundamental methods -----
 
