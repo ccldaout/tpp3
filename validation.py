@@ -18,8 +18,7 @@ class Check(object):
     __slots__ = tuple('_accepts_only:_accepts:_types:_min:_max:_inf:_sup:'
                       '_pred:_normalizer:_dim:_doc:_do_check_val:_is_c_array'.split(':'))
 
-    @keyword
-    def __init__(self, accepts=(), types=None, min=None, max=None, inf=None, sup=None,
+    def __init__(self, *, accepts=(), types=None, min=None, max=None, inf=None, sup=None,
                  pred=None, normalizer=None, dim=0, doc=''):
         self._accepts = accepts if isinstance(accepts, (tuple, list, set, dict)) else (accepts,)
         self._accepts_only = (self._accepts and
