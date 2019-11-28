@@ -5,12 +5,15 @@ import struct
 import sys
 
 
+PICKLE_PROTOCOL = 4
+
+
 #----------------------------------------------------------------------------
 #                        machine dependent functions
 #----------------------------------------------------------------------------
 
 #### thread
-import thread as _thread
+import _thread as _thread
 
 def _thread_start(func, args, **kwargs):
     return _thread.start_new_thread(func, args)
@@ -19,7 +22,7 @@ def _thread_getlock():
     return _thread.allocate_lock()
 
 #### poll
-from tpp import mpoll
+from . import mpoll
 
 #### socket.read
 def _recvall(sock, n):
@@ -32,7 +35,7 @@ def _recvall(sock, n):
         n -= len(s2)
     return s
         
-#### print exception
+#### print(exception)
 import traceback
 def _print_exception(e):
     traceback.print_exc()
@@ -100,9 +103,9 @@ class JSONPacker(DumpPackerBase):
     loads = staticmethod(json.loads)
 
 class PyPacker(DumpPackerBase):
-    import cPickle
-    dumps = staticmethod(lambda msg: cPickle.dumps(msg, cPickle.HIGHEST_PROTOCOL))
-    loads = staticmethod(cPickle.loads)
+    import _pickle
+    dumps = staticmethod(lambda msg: _pickle.dumps(msg, PICKLE_PROTOCOL))
+    loads = staticmethod(_pickle.loads)
 
 class UDPDumpPackerBase(DumpPackerBase):
 

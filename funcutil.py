@@ -3,7 +3,7 @@
 import inspect
 import functools
 import os
-from tpp.dynamicopt import option as _opt
+from .dynamicopt import option as _opt
 
 with _opt as _def:
     _def('TPP_PRINT_SRC', 'i', '[tpp.funcutil] print generated source', 0)
@@ -18,7 +18,7 @@ with _opt as _def:
 ###     if dic is None:
 ###         dic = {}
 ###     if TPP_PRINT_SRC:
-###         print src
+###         print(src)
 ###     eval(compile(src, filename, 'exec'), dic)
 ###     return dic[fname]
 ### 
@@ -31,16 +31,16 @@ def gen_func(fname, src, dic=None, filename=None):
     if dic is None:
         dic = {}
     if _opt.TPP_PRINT_SRC:
-        print src
+        print(src)
     mn = '__maker'
     src = '''def %s(%s):
     %s
-    return %s''' % (mn, ', '.join(dic.keys()),
+    return %s''' % (mn, ', '.join(list(dic.keys())),
                     src.replace('\n', '\n    '),
                     fname)
     mndic = {}
     eval(compile(src, filename, 'exec'), mndic)
-    return mndic[mn](*dic.values())
+    return mndic[mn](*list(dic.values()))
 
 #----------------------------------------------------------------------------
 #
@@ -60,7 +60,7 @@ def wrap(original_f, sig_doc=True):
         wrapper_f = functools.wraps(original_f)(wrapper_f)
         if sig_doc is True and not hasattr(wrapper_f, _TPP_DOC_MODIFIED):
             insert_doc(wrapper_f, 'Arguments: ' + Arguments(original_f).as_sig)
-        elif isinstance(sig_doc, basestring):
+        elif isinstance(sig_doc, str):
             insert_doc(wrapper_f, sig_doc)
         return wrapper_f
     return _wrap
@@ -71,7 +71,7 @@ def wrap(original_f, sig_doc=True):
 
 class Arguments(object):
     def __init__(self, f):
-        self.args, self.varargs, self.keywords, self.defaults = inspect.getargspec(f)
+        self.args, self.varargs, self.keywords, self.defaults, *rests = inspect.getfullargspec(f)
 
     @property
     def mandatory_args(self):
@@ -83,7 +83,7 @@ class Arguments(object):
     @property
     def optional_args(self):
         if self.defaults:
-            return zip(self.args[-len(self.defaults):], self.defaults)
+            return list(zip(self.args[-len(self.defaults):], self.defaults))
         else:
             return []
 

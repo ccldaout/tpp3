@@ -38,7 +38,7 @@ if hasattr(select, 'epoll'):
 else:
 
     import os
-    import Queue
+    import queue
 
     POLLIN = select.POLLIN
     POLLOUT = select.POLLIN
@@ -52,7 +52,7 @@ else:
             self._notify_pipe = os.pipe()
             self._notify_data = bytearray(1)
             self._poll.register(self._notify_pipe[0], POLLIN)
-            self._reqque = Queue.Queue()
+            self._reqque = queue.Queue()
 
         def _register(self, fd, fobj, eventmask):
             self._poll.register(fd, eventmask)
@@ -84,7 +84,7 @@ else:
                     if fd in self._fobjs:
                         yield (self._fobjs[fd], flag)
                     else:
-                        print 'fd:%1d is not registerd (maybe closed).' % fd
+                        print('fd:%1d is not registerd (maybe closed).' % fd)
 
         def poll(self, timeout=-1):
             return list(self.ipoll(timeout))

@@ -7,10 +7,10 @@ import os
 import os.path
 import sys
 import traceback
-from StringIO import StringIO
+from io import StringIO
 import tarfile
-from tpp import rpc
-from tpp import toolbox as tb
+from . import rpc
+from . import toolbox as tb
 
 ___ = tb.no_except
 
@@ -71,7 +71,7 @@ class PkgService(object):
 
     @rpc.export
     def get_exports(self):
-        return self._get_exports().keys()
+        return list(self._get_exports().keys())
 
     @rpc.export
     def get_serial(self, pkgname):
@@ -221,7 +221,7 @@ if __name__ == '__main__':
     def server(addr, conf):
         rpc.server(addr, [PkgService(conf)], background=False)
     if len(sys.argv) == 1:
-        print 'Usage: rimport host:port [server-conf]'
+        print('Usage: rimport host:port [server-conf]')
         exit(1)
     addr = sys.argv[1].split(':')
     addr[1] = int(addr[1])

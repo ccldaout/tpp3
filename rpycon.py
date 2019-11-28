@@ -3,8 +3,8 @@
 
 import code
 import sys
-from tpp import rpc
-from tpp import threadutil as tu
+from . import rpc
+from . import threadutil as tu
 
 #----------------------------------------------------------------------------
 #                             server side code
@@ -91,7 +91,7 @@ def client(addr):
         while True:
             prompt = ps1
             while True:
-                s = raw_input(prompt)
+                s = eval(input(prompt))
                 if not api.input(s):
                     break
                 prompt = ps2
@@ -106,7 +106,7 @@ __all__ = []
 if __name__ == '__main__':
     sys.argv.pop(0)
     if not sys.argv:
-        print 'Usage: rcon host:port'
+        print('Usage: rcon host:port')
     else:
         try:
             import readline

@@ -4,7 +4,7 @@ import os
 import sys
 import types as types
 from threading import Lock, RLock
-from tpp.dynamicopt import option as _opt
+from .dynamicopt import option as _opt
 
 with _opt as _def:
     _def('TPP_LAZYIMPORT', 'i', '[tpp.lazyimport] print lazyimport action', 0)
@@ -18,7 +18,7 @@ class LazyModule(module):
 
     def __new__(cls, name, lazyfinder=None):
         if _opt.TPP_LAZYIMPORT:
-            print '[ lazyimport ] -lazy-', name
+            print('[ lazyimport ] -lazy-', name)
         self = super().__new__(cls, name, '')
         self.__lock = RLock()
         self.__loaded = False
@@ -36,7 +36,7 @@ class LazyModule(module):
         if name in sys.modules:
             del sys.modules[name]
         if _opt.TPP_LAZYIMPORT:
-            print ('[ lazyimport ] import %s (access to %s)' % (name, attr))
+            print(('[ lazyimport ] import %s (access to %s)' % (name, attr)))
         # In order to get module object referrenced by 'name' parameter,
         # we must pass non-emply list as 4-th argument. If not, __import__ return
         # top module object in name.

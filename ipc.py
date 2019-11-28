@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import cPickle
+import _pickle
 import json
 import os
 import select
@@ -9,14 +9,18 @@ import struct
 import sys
 import time
 import traceback
-import tpp.threadutil as tu
-import tpp.toolbox as tb
-from tpp.dynamicopt import option as _opt
+from . import threadutil as tu
+from . import toolbox as tb
+from .dynamicopt import option as _opt
 
 with _opt as _def:
     _def('TPP_IPC_DEBUG', 'i', '[tpp.ipc] print message handled by packer', 0)
 
 ___ = tb.no_except
+
+
+PICKLE_PROTOCOL = 4
+
 
 #----------------------------------------------------------------------------
 #                          simple socket wrappter
@@ -64,7 +68,7 @@ class CSocket(object):
                 self.settimeout(None)
         except Exception as e:
             self.close()
-            raise type(e), (str(e) + ': ' + str(addr),), sys.exc_info()[2]
+            raise type(e)(str(e) + ': ' + str(addr)) from e
         return self
 
     def close(self, *args):
@@ -110,7 +114,7 @@ class CSocket(object):
     def recv_x(self, size):
         # return: (data, rest_size)
         # exception: socket.timeout, socket.error
-        data = ''
+        data = bytes()
         tmo_s = self.init_recv_tmo_s
         while size > 0:
             if (tmo_s is not None) and (not self.wait_readable(tmo_s)):
@@ -190,7 +194,7 @@ class PyPacker(PackerBase):
     MAX_PACKED = (1024*1024*16)
 
     def pack(self, msg):
-        s = cPickle.dumps(msg, cPickle.HIGHEST_PROTOCOL)
+        s = _pickle.dumps(msg, PICKLE_PROTOCOL)
         n = len(s)
         return struct.pack('<i', n)+s, n+4
         
@@ -206,7 +210,7 @@ class PyPacker(PackerBase):
         s, n = csock.recv_x(n)
         if n != 0:
             raise EOFError('Unexpected disconnection (error)')
-        return cPickle.loads(s)
+        return _pickle.loads(s)
 
 class JSONPacker(PackerBase):
     MAX_PACKED = (1024*1024*16)
@@ -321,7 +325,7 @@ class IPCPort(object):
             if isinstance(e, NoMoreData):
                 self._service.handle_DISCONNECTED(self)
             else:
-                traceback.print_exception(type(e), e, sys.exc_traceback)
+                traceback.print_exception(type(e), e, sys.exc_info()[2])
                 self._service.handle_SOCKERROR(self)
             return e
 

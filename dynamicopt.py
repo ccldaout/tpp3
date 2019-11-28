@@ -11,7 +11,7 @@
 #
 #   # For application which know FILE to be mapped.
 #
-#   from tpp.dynamicopt import option
+#   from .dynamicopt import option
 #   with option(FILE) as define:
 #       define(KEY, TYPE, COMMENT[, INITIAL_VALUE)
 #	                :
@@ -24,7 +24,7 @@
 #   # (2) if opt has been called with FILE parameter previously, opt
 #   #     remember FILE and map it again in next with statement.
 #   
-#   from tpp.dynamicopt import option
+#   from .dynamicopt import option
 #   with option as define:
 #       define(KEY, TYPE, COMMENT[, INITIAL_VALUE)
 #	                :
@@ -49,7 +49,7 @@ class Option(object):
                  '_Option__mobj', '_Option__cobj', '_Option__fobj')
 
     __MAPSIZE_b = 8192
-    __MAGIC = '$OPT'
+    __MAGIC = b'$OPT'
     __IDXLIM = 255		# 255 is deduced by type of idxcnt (uint_8)
 
     class _union(ctypes.Union):
@@ -116,7 +116,8 @@ class Option(object):
 
     def __make_attr(self, cobj):
         def g():
-            for i, attr in enumerate(cobj.attr_s.split('\n')):
+            attrs = cobj.attr_s.decode('ascii')
+            for i, attr in enumerate(attrs.split('\n')):
                 if i == cobj.idxcnt:
                     return
                 a = attr.split('\t')
@@ -132,8 +133,8 @@ class Option(object):
         assert self.__cobj.idxnxt == len(self.__attr)
 
     def __remake_cobj_attr_s(self):
-        self.__cobj.attr_s = '\n'.join(('%s\t%s\t%s' % (i, t, c)
-                                       for i, t, c in self.__attr))
+        self.__cobj.attr_s = bytes('\n'.join(('%s\t%s\t%s' % (i, t, c)
+                                              for i, t, c in self.__attr)), 'ascii')
 
     def __find_attr(self, ident):
         for i, attr in enumerate(self.__attr):
@@ -150,14 +151,14 @@ class Option(object):
     def __open_excl(self, create_if):
         if '/' not in self.__name:
             path = os.path.expanduser('~%s/.tpp/dynamicopt' % self.__user)
-            ___(os.makedirs)(path, 0755)
+            ___(os.makedirs)(path, 0o755)
             path = os.path.join(path, self.__name)
         else:
             path = self.__name
         o_flags = os.O_RDWR
         if create_if:
             o_flags |= os.O_CREAT
-        fd = os.open(path, o_flags, 0666)
+        fd = os.open(path, o_flags, 0o666)
         if os.geteuid() == 0 and '/' not in self.__name and self.__user != '':
             optdir = os.path.dirname(path)
             tppdir = os.path.dirname(optdir)
@@ -165,7 +166,7 @@ class Option(object):
             os.chown(tppdir, st.st_uid, st.st_gid)
             os.chown(optdir, st.st_uid, st.st_gid)
             os.chown(path, st.st_uid, st.st_gid)
-        ___(os.chmod)(path, 0666)		# os.fchmod is not exist in Pythonista
+        ___(os.chmod)(path, 0o666)		# os.fchmod is not exist in Pythonista
         fcntl.lockf(fd, fcntl.LOCK_EX)		# Exclusive lock until file is closed.
         return os.fdopen(fd, 'r+b')
 
@@ -199,10 +200,11 @@ class Option(object):
 
     def __unmap(self):
         if self.__mobj:
+            mo = self.__mobj
             self.__cobj = self.__cobj.dup()
-            self.__mobj.close()
             self.__mobj = None
             self.__remake_py_attr()
+            mo.close()
 
     # ---- Fundamental methods -----
 
@@ -283,8 +285,8 @@ class Option(object):
         for i, (idx, (ident, type_s, comment)) in enumerate(sorted_attr):
             if ident:
                 v = getattr(self.__cobj.v[idx], type_s)
-                print '%3d: %20s:%s %8s | %s' % (
-                    i, ident, type_s, v, comment)
+                print('%3d: %20s:%s %8s | %s' % (
+                    i, ident, type_s, v, comment))
 
     # ---- Additional management methods -----
 
@@ -355,8 +357,8 @@ if __name__ == '__main__':
         if not sys.flags.interactive:
             prms = (os.path.basename(sys.argv[0]).rstrip('.py'),
                     sys.argv[1] if len(sys.argv) == 2 else 'OPTMAP')
-            print 'Usage: python -m %s %s show' % prms
-            print '     : python -m %s %s ident[=value] [ident[=value] ...]' % prms
+            print('Usage: python -m %s %s show' % prms)
+            print('     : python -m %s %s ident[=value] [ident[=value] ...]' % prms)
     elif sys.argv[2] == 'show':
         option(sys.argv[1])._load()
         option._show()
@@ -366,7 +368,7 @@ if __name__ == '__main__':
             subexprs = expr.split('=')
             if len(subexprs) == 1:
                 ident = subexprs[0]
-                print '%s=%s' % (ident, getattr(option, ident))
+                print('%s=%s' % (ident, getattr(option, ident)))
             elif len(subexprs) != 2:
                 raise TypeError('Invalid assignment expression: %s' % expr)
             else:

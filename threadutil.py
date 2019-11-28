@@ -6,7 +6,7 @@ import threading
 import time
 import traceback
 from threading import *
-from tpp import toolbox as tb
+from . import toolbox as tb
 
 pr = tb.pr			# for compatibility
 
@@ -34,19 +34,17 @@ def quiet_finalize():
     import atexit
     import functools
 
-    class Monitor(object):
-        pass
-    monitor = Monitor()
-    monitor.running = True
+    running = True
 
     @atexit.register
     def go_shutdown():
-        monitor.running = False
+        nonlocal running
+        running = False
 
     def is_running(*args):
         # args is never used but this is required for simplified coding
         # in case of assigning threadutil.is_running to a class attribute.
-        return monitor.running
+        return running
 
     def decorator(target):
         @functools.wraps(target)
@@ -54,7 +52,7 @@ def quiet_finalize():
             try:
                 return target(*argv, **kwargs)
             except:
-                if monitor.running:
+                if running:
                     raise
         return _target
 

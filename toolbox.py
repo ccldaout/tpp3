@@ -6,7 +6,7 @@ import threading
 import traceback
 import time
 import types
-from tpp.dynamicopt import option as _opt
+from .dynamicopt import option as _opt
 
 with _opt as _def:
     _def('TPP_PR_NAME', 'i', '[tpp.toolbox] toolbox.pr add self thread name', 1)
@@ -29,7 +29,7 @@ class _Printer(object):
             fmt = threading.current_thread().name + ': ' +fmt
         s = fmt % args
         with self._lock:
-            print s
+            print(s)
 
 pr = _Printer()
 
@@ -44,14 +44,14 @@ class no_abort(object):
     def __enter__(self):
         pass
     def __exit__(self, exc_type, exc_value, exc_traceback):
-        print '<<< expect:', self._exc_expect
+        print('<<< expect:', self._exc_expect)
         if exc_type is not None:
             if self._exc_simple:
-                print '>>> %s: %s' % (exc_type.__name__, exc_value)
+                print('>>> %s: %s' % (exc_type.__name__, exc_value))
             else:
                 traceback.print_exc()
         else:
-            print '>>> no error'
+            print('>>> no error')
         return True
 
 no_abort = no_abort()
@@ -99,7 +99,7 @@ class Delegate(object):
     def __contains__(self, func):
         return func in self._funcs
 
-    def __nonzero__(self):
+    def __bool__(self):
         return bool(self._funcs)
 
     def __len__(self):
@@ -127,7 +127,7 @@ class Counter(object):
             return self._v
 
 class Null(object):
-    def __nonzero__(self):
+    def __bool__(self):
         return False
     def __call__(self, *args):
         return self
@@ -153,7 +153,7 @@ class Bomb(object):
         self = super().__new__(cls)
         super().__setattr__('_exc', exc)
         return self
-    def __nonzero__(self):
+    def __bool__(self):
         raise self._exc
     def __call__(self, *args):
         raise self._exc
@@ -229,7 +229,7 @@ class OnetimeMsgBox(object):
         return self
 
     def __iter__(self):
-        return self._mbox.iteritems()
+        return list(self._mbox.items())
 
     def reserve(self, key = None):
         with self._cond:
@@ -281,7 +281,7 @@ class BufferedPrint(object):
 
     def __new__(cls, size_b=None, printer=None):
         def _printer(fmt, *args):
-            print fmt % args
+            print(fmt % args)
         self = super().__new__(cls)
         self._size_b = size_b if size_b else 8192
         self.printer = printer if printer else _printer

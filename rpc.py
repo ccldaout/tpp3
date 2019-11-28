@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import inspect
-from tpp import ipc
-from tpp import toolbox as tb
-from tpp import threadutil as tu
-from tpp import funcutil as fu
-from tpp.ctypesutil import array as _c_array_extension
+from . import ipc
+from . import toolbox as tb
+from . import threadutil as tu
+from . import funcutil as fu
+from .ctypesutil import array as _c_array_extension
 from ctypes import Array as _C_ArrayType
 
 ___ = tb.no_except
@@ -107,7 +107,7 @@ class _ProxyBackendManager(object):
             if isinstance(v, _C_ArrayType):
                 _c_array_extension(type(v))
             elif isinstance(v, dict):
-                v = dict([(k, _encode(e)) for k, e in v.items()])
+                v = dict([(k, _encode(e)) for k, e in list(v.items())])
             elif isinstance(v, (list, tuple)):
                 v = [_encode(e) for e in v]
             return v
@@ -119,7 +119,7 @@ class _ProxyBackendManager(object):
             if isinstance(v, _ProxyPackage):
                 return v.decode(port)
             if isinstance(v, dict):
-                v = dict([(k, _decode(e)) for k, e in v.items()])
+                v = dict([(k, _decode(e)) for k, e in list(v.items())])
             elif isinstance(v, (list, tuple)):
                 v = [_decode(e) for e in v]
             return v

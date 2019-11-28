@@ -4,24 +4,24 @@
 #
 #   # for application which know CTYPES_CLASS
 #
-#   from tpp.dynamicprm import parameter
+#   from .dynamicprm import parameter
 #   parameter(FILE, ctypes_class)
 #
 # [CASE2] call parameter without CTYPES_CLASS argument
 #
 #   # for outside of application
 #
-#   from tpp.dynamicprm import parameter
+#   from .dynamicprm import parameter
 #   with parameter(FILE) as cmd:
 #     cmd.show()
 
-import cPickle
+import _pickle
 import mmap
 import os
-from tpp import ctypesutil as cu
-from tpp.ctypessyms import *
-from tpp.funcutil import Symbols
-from tpp.toolbox import alignP2, no_except as ___
+from . import ctypesutil as cu
+from .ctypessyms import *
+from .funcutil import Symbols
+from .toolbox import alignP2, no_except as ___
 
 
 class PortableCtype(object):
@@ -82,30 +82,30 @@ class PortableCtype(object):
             if t not in self._PRIMITIVES and t not in cache:
                 cache.add(t)
                 t._show(cache)
-        print '%s(%s):' % (self._name, self._c_class.__name__)
+        print('%s(%s):' % (self._name, self._c_class.__name__))
         for fld in self._fields:
-            print '    %s : %s %s' % (fld[0], fld[1],
-                                      fld[2] if len(fld) == 3 else '')
-        print
+            print('    %s : %s %s' % (fld[0], fld[1],
+                                      fld[2] if len(fld) == 3 else ''))
+        print()
 
     def show(self):
         self._show(set())
 
     def dumps(self):
-        return cPickle.dumps(self, 2)
+        return _pickle.dumps(self, 2)
 
     @staticmethod
     def loads(s):
-        return cPickle.loads(s)
+        return _pickle.loads(s)
 
     def dump(self, path):
         with open(path, 'w') as f:
-            cPickle.dump(self, f, 2)
+            _pickle.dump(self, f, 2)
 
     @staticmethod
     def load(path):
         with open(path) as f:
-            return cPickle.load(f)
+            return _pickle.load(f)
 
     def gen_class(self):
         for fld in self._fields:
@@ -133,7 +133,7 @@ class Parameter(object):
     __slots__ = ('_Parameter__mobj', '_Parameter__cobj')
 
     __MAX_PICKLED_CTYPE = 1024*64
-    __MAGIC = '$COP'
+    __MAGIC = b'$COP'
 
     def __new__(cls):
         self = super().__new__(cls)
@@ -164,14 +164,14 @@ class Parameter(object):
     def __open(self, name, user, create_if):
         if '/' not in name:
             path = os.path.expanduser('~/.tpp/dynamicprm' % user)
-            ___(os.makedirs)(path, 0755)
+            ___(os.makedirs)(path, 0o755)
             path = os.path.join(path, name)
         else:
             path = name
         o_flags = os.O_RDWR
         if create_if:
             o_flags |= os.O_CREAT
-        fd = os.open(path, o_flags, 0666)
+        fd = os.open(path, o_flags, 0o666)
         if os.geteuid() == 0 and '/' not in name and user != '':
             optdir = os.path.dirname(path)
             tppdir = os.path.dirname(optdir)
@@ -179,7 +179,7 @@ class Parameter(object):
             os.chown(tppdir, st.st_uid, st.st_gid)
             os.chown(optdir, st.st_uid, st.st_gid)
             os.chown(path, st.st_uid, st.st_gid)
-        ___(os.fchmod)(fd, 0666)
+        ___(os.fchmod)(fd, 0o666)
         return os.fdopen(fd, 'r+b')
 
     @staticmethod
@@ -190,7 +190,7 @@ class Parameter(object):
                 co.PICKLED_TYPE_b[i] = b
         else:
             return str(bytearray((co.PICKLED_TYPE_b[i]
-                                  for i in xrange(co.pickled_size))))
+                                  for i in range(co.pickled_size))))
 
     def __extract(self, f):
         mobj = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
@@ -262,8 +262,8 @@ if __name__ == '__main__':
         if not sys.flags.interactive:
             prms = (os.path.basename(sys.argv[0]).rstrip('.py'),
                     sys.argv[1] if len(sys.argv) == 2 else 'PRMMAP')
-            print 'Usage: python -m %s %s show' % prms
-            print '     : python -m %s %s member[.member...][=value] ...' % prms
+            print('Usage: python -m %s %s show' % prms)
+            print('     : python -m %s %s member[.member...][=value] ...' % prms)
     elif sys.argv[2] == 'show':
         with parameter(sys.argv[1]) as cmd:
             cmd.show()
@@ -279,7 +279,7 @@ if __name__ == '__main__':
             subexprs = expr.split('=')
             if len(subexprs) == 1:
                 obj, ident = lastref(subexprs[0])
-                print getattr(obj, ident)
+                print(getattr(obj, ident))
             elif len(subexprs) != 2:
                 raise TypeError('Invalid assignment expression: %s' % expr)
             else:

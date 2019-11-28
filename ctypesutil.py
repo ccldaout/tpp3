@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from tpp.ctypessyms import *
+from .ctypessyms import *
 
 # Enum class
 
-from tpp.enumtype import EnumBase as _EnumBase
+from .enumtype import EnumBase as _EnumBase
 
 class _MetaEnum(type(ctypes.c_int32)):
     def __new__(mcls, name, bases, dic):
         cls = super().__new__(mcls, name, bases, dic)
         cls2 = type(_EnumBase)(name+'_', (_EnumBase,), dic)
         cls._enumtype_ = cls2
-        for k, v in dic.items():
-            if isinstance(v, (int, long)):
+        for k, v in list(dic.items()):
+            if isinstance(v, int):
                 setattr(cls, k, getattr(cls2, k))
         return cls
 
@@ -38,14 +38,14 @@ class Enum(ctypes.c_int32, metaclass=_MetaEnum):
         return self.value
 
     def __long__(self):
-        return long(self.value)
+        return int(self.value)
 
     def __float__(self):
         return float(self.value)
 
     def __repr__(self):
         i_self = int(self)
-        for k, v in type(self).__dict__.iteritems():
+        for k, v in list(type(self).__dict__.items()):
             if v == i_self:
                 return '%s(%d)' % (k, i_self)
         return '?<%s>(%d)' % (type(self).__name__, i_self)
@@ -92,7 +92,7 @@ def analyze_ctypes(ctype):
 # addtional methods
 
 def _make_dump():
-    from tpp.toolbox import BufferedPrint
+    from .toolbox import BufferedPrint
 
     bufferedprint = BufferedPrint()
 
@@ -101,7 +101,7 @@ def _make_dump():
             return (cdata == 0)
         elif isinstance(cdata, float):
             return (cdata == 0.0)
-        elif isinstance(cdata, basestring):
+        elif isinstance(cdata, bytes):
             return (len(cdata) == 0)
         if csize == 0:
             csize = c_sizeof(cdata)
@@ -119,7 +119,7 @@ def _make_dump():
             printer('%*s%s: <%s>', ind, ' ', name, obj.encode('string_escape'))
         elif hasattr(obj, '__len__'):
             last = len(obj)-1
-            for i in xrange(len(obj)):
+            for i in range(len(obj)):
                 if i == 0 or i == last or not _isallzero(obj[i]):
                     idxm = '%s[%3d]' % (name, i)
                     _dump(ind, idxm, obj[i], printer)
@@ -127,7 +127,7 @@ def _make_dump():
             printer('%*s%s: %s', ind, ' ', name, str(obj))
 
     def _print(fmt, *args):
-        print fmt % args
+        print(fmt % args)
 
     def dump(self, printer=None, all=False):
         if not printer:
@@ -152,7 +152,7 @@ def clear(self):
     c_memset(c_addressof(self), 0, c_sizeof(self))
 
 def encode(self):
-    if isinstance(self, (str, int, long, float)):
+    if isinstance(self, (str, int, float)):
         return self
     if hasattr(self, '__len__'):
         return [encode(o) for o in self]
@@ -169,7 +169,7 @@ def decode(self, eobj):
             for idx, e in enumerate(eobj):
                 self[idx] = e
     elif isinstance(eobj, dict):
-        for k, e in eobj.items():
+        for k, e in list(eobj.items()):
             if isinstance(e, (list, dict)):
                 decode(getattr(self, k), e)
             else:
@@ -187,6 +187,8 @@ def _wrap_setattr(setattr_):
         except TypeError:
             if isinstance(val, float):
                 setattr_(self, mbr, int(val))
+            elif isinstance(val, str):
+                setattr_(self, mbr, bytes(val, 'ascii'))
             else:
                 raise
     return _setattr
@@ -206,9 +208,10 @@ def _wrap_setitem(setitem_):
                 raise
     return _setitem
 
-# Enable a ctypes array to be cPickled.
+# Enable a ctypes array to be _pickled.
 
-def _array_unpickle((ctype, ds), bs):
+def _array_unpickle(ctana, bs):
+    ctype, ds = ctana
     for n in reversed(ds):
         ctype *= n
     return array(ctype).from_buffer(bs)
@@ -364,7 +367,7 @@ class Struct(ctypes.Structure, metaclass=_MetaStruct):
             sep = ''
             for fld in ct._fields_[:hn]:
                 v = getattr(co, fld[0])
-                if isinstance(v, (int, long, float, basestring)):
+                if isinstance(v, (int, float, bytes)):
                     yield '%s%s:%s' % (sep, fld[0], repr(v))
                 else:
                     yield '%s%s' % (sep, fld[0])

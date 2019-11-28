@@ -3,10 +3,9 @@
 import collections
 import math
 import time
-from tpp.validation import enforce_keyword
-from tpp import threadutil as tu
-from tpp import toolbox as tb
-from tpp import ipc
+from . import threadutil as tu
+from . import toolbox as tb
+from . import ipc
 
 LOG_SIZE = 30
 
@@ -112,8 +111,7 @@ class _ServerService(_ServiceBase):
 
 class _InteractiveBase(object):
 
-    @enforce_keyword
-    def __new__(cls, service,
+    def __new__(cls, service, *,
                 on_message=None, on_connected=None, on_disconnected=None,
                 attr2ev=None, quiet_messages=None,
                 logsize=None):
@@ -179,7 +177,7 @@ class _InteractiveBase(object):
         log = self.__service.ipclog
         n = len(log)
         for i, (tms, rw, cid, msg) in reversed(list(enumerate(log))):
-            print '%3d %s %s %2d %s' % (i, tms, RW[rw], cid, msg)
+            print('%3d %s %s %2d %s' % (i, tms, RW[rw], cid, msg))
 
     def clear_history(self):
         self.__service.ipclog.clear()
@@ -198,8 +196,7 @@ class _InteractiveBase(object):
 
 class InteractiveClient(_InteractiveBase):
 
-    @enforce_keyword
-    def __new__(cls, addr,
+    def __new__(cls, addr, *,
                 packer=None, recover=True, retry=True,
                 on_message=None, on_connected=None, on_disconnected=None,
                 attr2ev=None, quiet_messages=None,
@@ -226,8 +223,7 @@ class InteractiveClient(_InteractiveBase):
 
 class InteractiveServer(_InteractiveBase):
 
-    @enforce_keyword
-    def __new__(cls, addr,
+    def __new__(cls, addr, *,
                 packer=None,
                 on_message=None, on_connected=None, on_disconnected=None,
                 attr2ev=None, quiet_messages=None,

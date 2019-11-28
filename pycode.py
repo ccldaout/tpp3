@@ -14,13 +14,13 @@ def dis_code(c, upper=None):
     for c2 in c.co_consts:
         if isinstance(c2, types.CodeType):
             dis_code(c2, upper)
-            print
-    print '[ co_name: %s ] --------' % upper, c
-    print '  co_varnames :', c.co_varnames
-    print '  co_names    :', c.co_names
-    print '  co_freevars :', c.co_freevars
-    print '  co_cellvars :', c.co_cellvars
-    print '  co_flags    : 0o%o' % c.co_flags 
+            print()
+    print('[ co_name: %s ] --------' % upper, c)
+    print('  co_varnames :', c.co_varnames)
+    print('  co_names    :', c.co_names)
+    print('  co_freevars :', c.co_freevars)
+    print('  co_cellvars :', c.co_cellvars)
+    print('  co_flags    : 0o%o' % c.co_flags )
     dis.dis(c)
 
 def dis_pyc(pyc):
