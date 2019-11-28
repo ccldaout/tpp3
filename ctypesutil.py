@@ -12,7 +12,7 @@ class _MetaEnum(type(ctypes.c_int32)):
         cls2 = type(_EnumBase)(name+'_', (_EnumBase,), dic)
         cls._enumtype_ = cls2
         for k, v in dic.items():
-            if isinstance(v, (int, long)):
+            if isinstance(v, int):
                 setattr(cls, k, getattr(cls2, k))
         return cls
 
@@ -45,7 +45,7 @@ class Enum(ctypes.c_int32, metaclass=_MetaEnum):
 
     def __repr__(self):
         i_self = int(self)
-        for k, v in type(self).__dict__.iteritems():
+        for k, v in type(self).__dict__.items():
             if v == i_self:
                 return '%s(%d)' % (k, i_self)
         return '?<%s>(%d)' % (type(self).__name__, i_self)
@@ -119,7 +119,7 @@ def _make_dump():
             printer('%*s%s: <%s>', ind, ' ', name, obj.encode('string_escape'))
         elif hasattr(obj, '__len__'):
             last = len(obj)-1
-            for i in xrange(len(obj)):
+            for i in range(len(obj)):
                 if i == 0 or i == last or not _isallzero(obj[i]):
                     idxm = '%s[%3d]' % (name, i)
                     _dump(ind, idxm, obj[i], printer)
@@ -152,7 +152,7 @@ def clear(self):
     c_memset(c_addressof(self), 0, c_sizeof(self))
 
 def encode(self):
-    if isinstance(self, (str, int, long, float)):
+    if isinstance(self, (str, int, float)):
         return self
     if hasattr(self, '__len__'):
         return [encode(o) for o in self]
@@ -187,6 +187,8 @@ def _wrap_setattr(setattr_):
         except TypeError:
             if isinstance(val, float):
                 setattr_(self, mbr, int(val))
+            elif isinstance(val, str):
+                setattr_(self, mbr, bytes(val, 'ascii'))
             else:
                 raise
     return _setattr
@@ -208,7 +210,8 @@ def _wrap_setitem(setitem_):
 
 # Enable a ctypes array to be cPickled.
 
-def _array_unpickle((ctype, ds), bs):
+def _array_unpickle(ctana, bs):
+    ctype, ds = ctana
     for n in reversed(ds):
         ctype *= n
     return array(ctype).from_buffer(bs)
@@ -364,7 +367,7 @@ class Struct(ctypes.Structure, metaclass=_MetaStruct):
             sep = ''
             for fld in ct._fields_[:hn]:
                 v = getattr(co, fld[0])
-                if isinstance(v, (int, long, float, basestring)):
+                if isinstance(v, (int, float, basestring)):
                     yield '%s%s:%s' % (sep, fld[0], repr(v))
                 else:
                     yield '%s%s' % (sep, fld[0])

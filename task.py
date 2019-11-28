@@ -365,7 +365,7 @@ class DAGTasks(object):
                 if not depon:
                     del ns[n]
                     rmc += 1
-                    for n2, depon2 in ns.iteritems():
+                    for n2, depon2 in ns.items():
                         if n in depon2:
                             depon2.remove(n)
             if rmc == 0:

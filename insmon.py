@@ -44,7 +44,7 @@ class _object(object, metaclass=_type):
     @staticmethod
     def __show_alived__(all_=False):
         _object.__gc_collect__()
-        for k, os in _object.__counts__.iteritems():
+        for k, os in _object.__counts__.items():
             n = len(os)
             if n or all_:
                 print('%8d %s' % (len(os), k))

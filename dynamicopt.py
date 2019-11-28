@@ -110,7 +110,7 @@ class Option(object):
             return _Option.from_buffer(buffer)
         else:
             co = _Option()
-            co.magic = self.__MAGIC
+            co.magic = bytes(self.__MAGIC, 'ascii')
             co.idxcnt = reqidxcnt
             return co
 
@@ -132,8 +132,8 @@ class Option(object):
         assert self.__cobj.idxnxt == len(self.__attr)
 
     def __remake_cobj_attr_s(self):
-        self.__cobj.attr_s = '\n'.join(('%s\t%s\t%s' % (i, t, c)
-                                       for i, t, c in self.__attr))
+        self.__cobj.attr_s = bytes('\n'.join(('%s\t%s\t%s' % (i, t, c)
+                                              for i, t, c in self.__attr)), 'ascii')
 
     def __find_attr(self, ident):
         for i, attr in enumerate(self.__attr):
@@ -150,14 +150,14 @@ class Option(object):
     def __open_excl(self, create_if):
         if '/' not in self.__name:
             path = os.path.expanduser('~%s/.tpp3/dynamicopt' % self.__user)
-            ___(os.makedirs)(path, 0755)
+            ___(os.makedirs)(path, 0o755)
             path = os.path.join(path, self.__name)
         else:
             path = self.__name
         o_flags = os.O_RDWR
         if create_if:
             o_flags |= os.O_CREAT
-        fd = os.open(path, o_flags, 0666)
+        fd = os.open(path, o_flags, 0o666)
         if os.geteuid() == 0 and '/' not in self.__name and self.__user != '':
             optdir = os.path.dirname(path)
             tpp3dir = os.path.dirname(optdir)
@@ -165,7 +165,7 @@ class Option(object):
             os.chown(tpp3dir, st.st_uid, st.st_gid)
             os.chown(optdir, st.st_uid, st.st_gid)
             os.chown(path, st.st_uid, st.st_gid)
-        ___(os.chmod)(path, 0666)		# os.fchmod is not exist in Pythonista
+        ___(os.chmod)(path, 0o666)		# os.fchmod is not exist in Pythonista
         fcntl.lockf(fd, fcntl.LOCK_EX)		# Exclusive lock until file is closed.
         return os.fdopen(fd, 'r+b')
 

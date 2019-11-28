@@ -164,14 +164,14 @@ class Parameter(object):
     def __open(self, name, user, create_if):
         if '/' not in name:
             path = os.path.expanduser('~/.tpp3/dynamicprm' % user)
-            ___(os.makedirs)(path, 0755)
+            ___(os.makedirs)(path, 0o755)
             path = os.path.join(path, name)
         else:
             path = name
         o_flags = os.O_RDWR
         if create_if:
             o_flags |= os.O_CREAT
-        fd = os.open(path, o_flags, 0666)
+        fd = os.open(path, o_flags, 0o666)
         if os.geteuid() == 0 and '/' not in name and user != '':
             optdir = os.path.dirname(path)
             tpp3dir = os.path.dirname(optdir)
@@ -179,7 +179,7 @@ class Parameter(object):
             os.chown(tpp3dir, st.st_uid, st.st_gid)
             os.chown(optdir, st.st_uid, st.st_gid)
             os.chown(path, st.st_uid, st.st_gid)
-        ___(os.fchmod)(fd, 0666)
+        ___(os.fchmod)(fd, 0o666)
         return os.fdopen(fd, 'r+b')
 
     @staticmethod
@@ -190,7 +190,7 @@ class Parameter(object):
                 co.PICKLED_TYPE_b[i] = b
         else:
             return str(bytearray((co.PICKLED_TYPE_b[i]
-                                  for i in xrange(co.pickled_size))))
+                                  for i in range(co.pickled_size))))
 
     def __extract(self, f):
         mobj = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)

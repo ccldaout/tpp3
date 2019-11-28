@@ -229,7 +229,7 @@ class OnetimeMsgBox(object):
         return self
 
     def __iter__(self):
-        return self._mbox.iteritems()
+        return self._mbox.items()
 
     def reserve(self, key = None):
         with self._cond:

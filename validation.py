@@ -113,7 +113,7 @@ def enforce_keyword_alt(f):
 
 def check_keywords(assigned_kws, defined_kws, args=()):
     kws = {}
-    for k, v in defined_kws.iteritems():
+    for k, v in defined_kws.items():
         kws[k] = assigned_kws.pop(k, v)
     for k, v in assigned_kws.items():
         if k in args:
@@ -131,7 +131,7 @@ def define_keywords(**defined_kws):
         if not a.keywords:
             raise TypeError('define_keywords cannot decorate a function having no keywords')
             pass
-        kwsig = ', '.join(('%s=%s' % (k, repr(v)) for k, v in defined_kws.iteritems()))
+        kwsig = ', '.join(('%s=%s' % (k, repr(v)) for k, v in defined_kws.items()))
         sig_doc = '*args: %s\n**kws: %s' % (a.mandatory_as_sig, kwsig)
         @_fu.wrap(f, sig_doc)
         def __f(*args, **kws):
@@ -180,11 +180,11 @@ class Check(object):
                 if n is None:
                     n = len(val)
                 if (len(dim) == 1):
-                    for i in xrange(n):
+                    for i in range(n):
                         self._check(name, val[i], checktype)
                 else:
                     dim = dim[1:]
-                    for i in xrange(n):
+                    for i in range(n):
                         breakdown(dim, val[i], checktype)
             if self._is_c_array:
                 self._check_type(name, val)
@@ -287,7 +287,7 @@ class _ArgChecker(object):
                 self._db[key] = chk
 
     def __call__(self, argdef, argdic):
-        for key, val in argdic.iteritems():
+        for key, val in argdic.items():
             if key in self._db:
                 self._db[key](key, val)
         if self._check_all:
@@ -302,7 +302,7 @@ class _ArgChecker(object):
                     chk = self._db[a]
                     for s in chk.doc(a, indent):
                         yield s
-            for key, chk in self._db.iteritems():
+            for key, chk in self._db.items():
                 if key not in args:
                     for s in chk.doc(key, indent):
                         yield s
