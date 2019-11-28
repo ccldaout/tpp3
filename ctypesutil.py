@@ -208,7 +208,7 @@ def _wrap_setitem(setitem_):
                 raise
     return _setitem
 
-# Enable a ctypes array to be cPickled.
+# Enable a ctypes array to be _pickled.
 
 def _array_unpickle(ctana, bs):
     ctype, ds = ctana

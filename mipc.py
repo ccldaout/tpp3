@@ -100,9 +100,9 @@ class JSONPacker(DumpPackerBase):
     loads = staticmethod(json.loads)
 
 class PyPacker(DumpPackerBase):
-    import cPickle
-    dumps = staticmethod(lambda msg: cPickle.dumps(msg, cPickle.HIGHEST_PROTOCOL))
-    loads = staticmethod(cPickle.loads)
+    import _pickle
+    dumps = staticmethod(lambda msg: _pickle.dumps(msg, _pickle.HIGHEST_PROTOCOL))
+    loads = staticmethod(_pickle.loads)
 
 class UDPDumpPackerBase(DumpPackerBase):
 

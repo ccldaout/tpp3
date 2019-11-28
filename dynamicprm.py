@@ -15,7 +15,7 @@
 #   with parameter(FILE) as cmd:
 #     cmd.show()
 
-import cPickle
+import _pickle
 import mmap
 import os
 from tpp3 import ctypesutil as cu
@@ -92,20 +92,20 @@ class PortableCtype(object):
         self._show(set())
 
     def dumps(self):
-        return cPickle.dumps(self, 2)
+        return _pickle.dumps(self, 2)
 
     @staticmethod
     def loads(s):
-        return cPickle.loads(s)
+        return _pickle.loads(s)
 
     def dump(self, path):
         with open(path, 'w') as f:
-            cPickle.dump(self, f, 2)
+            _pickle.dump(self, f, 2)
 
     @staticmethod
     def load(path):
         with open(path) as f:
-            return cPickle.load(f)
+            return _pickle.load(f)
 
     def gen_class(self):
         for fld in self._fields:
@@ -133,7 +133,7 @@ class Parameter(object):
     __slots__ = ('_Parameter__mobj', '_Parameter__cobj')
 
     __MAX_PICKLED_CTYPE = 1024*64
-    __MAGIC = '$COP'
+    __MAGIC = b'$COP'
 
     def __new__(cls):
         self = super().__new__(cls)

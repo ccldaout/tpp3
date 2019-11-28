@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import cPickle
+import _pickle
 import json
 import os
 import select
@@ -64,7 +64,7 @@ class CSocket(object):
                 self.settimeout(None)
         except Exception as e:
             self.close()
-            raise type(e), (str(e) + ': ' + str(addr),), sys.exc_info()[2]
+            raise type(e)(str(e) + ': ' + str(addr)) from e
         return self
 
     def close(self, *args):
@@ -190,7 +190,7 @@ class PyPacker(PackerBase):
     MAX_PACKED = (1024*1024*16)
 
     def pack(self, msg):
-        s = cPickle.dumps(msg, cPickle.HIGHEST_PROTOCOL)
+        s = _pickle.dumps(msg, _pickle.HIGHEST_PROTOCOL)
         n = len(s)
         return struct.pack('<i', n)+s, n+4
         
@@ -206,7 +206,7 @@ class PyPacker(PackerBase):
         s, n = csock.recv_x(n)
         if n != 0:
             raise EOFError('Unexpected disconnection (error)')
-        return cPickle.loads(s)
+        return _pickle.loads(s)
 
 class JSONPacker(PackerBase):
     MAX_PACKED = (1024*1024*16)

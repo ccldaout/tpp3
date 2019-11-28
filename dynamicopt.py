@@ -49,7 +49,7 @@ class Option(object):
                  '_Option__mobj', '_Option__cobj', '_Option__fobj')
 
     __MAPSIZE_b = 8192
-    __MAGIC = '$OPT'
+    __MAGIC = b'$OPT'
     __IDXLIM = 255		# 255 is deduced by type of idxcnt (uint_8)
 
     class _union(ctypes.Union):
@@ -110,13 +110,14 @@ class Option(object):
             return _Option.from_buffer(buffer)
         else:
             co = _Option()
-            co.magic = bytes(self.__MAGIC, 'ascii')
+            co.magic = self.__MAGIC
             co.idxcnt = reqidxcnt
             return co
 
     def __make_attr(self, cobj):
         def g():
-            for i, attr in enumerate(cobj.attr_s.split('\n')):
+            attrs = cobj.attr_s.decode('ascii')
+            for i, attr in enumerate(attrs.split('\n')):
                 if i == cobj.idxcnt:
                     return
                 a = attr.split('\t')
