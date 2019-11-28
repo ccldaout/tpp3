@@ -101,7 +101,7 @@ def _make_dump():
             return (cdata == 0)
         elif isinstance(cdata, float):
             return (cdata == 0.0)
-        elif isinstance(cdata, basestring):
+        elif isinstance(cdata, bytes):
             return (len(cdata) == 0)
         if csize == 0:
             csize = c_sizeof(cdata)
@@ -367,7 +367,7 @@ class Struct(ctypes.Structure, metaclass=_MetaStruct):
             sep = ''
             for fld in ct._fields_[:hn]:
                 v = getattr(co, fld[0])
-                if isinstance(v, (int, float, basestring)):
+                if isinstance(v, (int, float, bytes)):
                     yield '%s%s:%s' % (sep, fld[0], repr(v))
                 else:
                     yield '%s%s' % (sep, fld[0])

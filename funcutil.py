@@ -60,7 +60,7 @@ def wrap(original_f, sig_doc=True):
         wrapper_f = functools.wraps(original_f)(wrapper_f)
         if sig_doc is True and not hasattr(wrapper_f, _TPP_DOC_MODIFIED):
             insert_doc(wrapper_f, 'Arguments: ' + Arguments(original_f).as_sig)
-        elif isinstance(sig_doc, basestring):
+        elif isinstance(sig_doc, str):
             insert_doc(wrapper_f, sig_doc)
         return wrapper_f
     return _wrap

@@ -7,7 +7,7 @@ import os
 import os.path
 import sys
 import traceback
-from StringIO import StringIO
+from io import StringIO
 import tarfile
 from tpp3 import rpc
 from tpp3 import toolbox as tb
