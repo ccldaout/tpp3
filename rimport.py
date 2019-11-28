@@ -221,7 +221,7 @@ if __name__ == '__main__':
     def server(addr, conf):
         rpc.server(addr, [PkgService(conf)], background=False)
     if len(sys.argv) == 1:
-        print 'Usage: rimport host:port [server-conf]'
+        print('Usage: rimport host:port [server-conf]')
         exit(1)
     addr = sys.argv[1].split(':')
     addr[1] = int(addr[1])

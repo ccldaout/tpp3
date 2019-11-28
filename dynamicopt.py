@@ -283,8 +283,8 @@ class Option(object):
         for i, (idx, (ident, type_s, comment)) in enumerate(sorted_attr):
             if ident:
                 v = getattr(self.__cobj.v[idx], type_s)
-                print '%3d: %20s:%s %8s | %s' % (
-                    i, ident, type_s, v, comment)
+                print('%3d: %20s:%s %8s | %s' % (
+                    i, ident, type_s, v, comment))
 
     # ---- Additional management methods -----
 
@@ -355,8 +355,8 @@ if __name__ == '__main__':
         if not sys.flags.interactive:
             prms = (os.path.basename(sys.argv[0]).rstrip('.py'),
                     sys.argv[1] if len(sys.argv) == 2 else 'OPTMAP')
-            print 'Usage: python -m %s %s show' % prms
-            print '     : python -m %s %s ident[=value] [ident[=value] ...]' % prms
+            print('Usage: python -m %s %s show' % prms)
+            print('     : python -m %s %s ident[=value] [ident[=value] ...]' % prms)
     elif sys.argv[2] == 'show':
         option(sys.argv[1])._load()
         option._show()
@@ -366,7 +366,7 @@ if __name__ == '__main__':
             subexprs = expr.split('=')
             if len(subexprs) == 1:
                 ident = subexprs[0]
-                print '%s=%s' % (ident, getattr(option, ident))
+                print('%s=%s' % (ident, getattr(option, ident)))
             elif len(subexprs) != 2:
                 raise TypeError('Invalid assignment expression: %s' % expr)
             else:

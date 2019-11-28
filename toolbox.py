@@ -29,7 +29,7 @@ class _Printer(object):
             fmt = threading.current_thread().name + ': ' +fmt
         s = fmt % args
         with self._lock:
-            print s
+            print(s)
 
 pr = _Printer()
 
@@ -44,14 +44,14 @@ class no_abort(object):
     def __enter__(self):
         pass
     def __exit__(self, exc_type, exc_value, exc_traceback):
-        print '<<< expect:', self._exc_expect
+        print('<<< expect:', self._exc_expect)
         if exc_type is not None:
             if self._exc_simple:
-                print '>>> %s: %s' % (exc_type.__name__, exc_value)
+                print('>>> %s: %s' % (exc_type.__name__, exc_value))
             else:
                 traceback.print_exc()
         else:
-            print '>>> no error'
+            print('>>> no error')
         return True
 
 no_abort = no_abort()
@@ -281,7 +281,7 @@ class BufferedPrint(object):
 
     def __new__(cls, size_b=None, printer=None):
         def _printer(fmt, *args):
-            print fmt % args
+            print(fmt % args)
         self = super().__new__(cls)
         self._size_b = size_b if size_b else 8192
         self.printer = printer if printer else _printer

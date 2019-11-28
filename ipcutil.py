@@ -179,7 +179,7 @@ class _InteractiveBase(object):
         log = self.__service.ipclog
         n = len(log)
         for i, (tms, rw, cid, msg) in reversed(list(enumerate(log))):
-            print '%3d %s %s %2d %s' % (i, tms, RW[rw], cid, msg)
+            print('%3d %s %s %2d %s' % (i, tms, RW[rw], cid, msg))
 
     def clear_history(self):
         self.__service.ipclog.clear()

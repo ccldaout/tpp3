@@ -106,7 +106,7 @@ __all__ = []
 if __name__ == '__main__':
     sys.argv.pop(0)
     if not sys.argv:
-        print 'Usage: rcon host:port'
+        print('Usage: rcon host:port')
     else:
         try:
             import readline

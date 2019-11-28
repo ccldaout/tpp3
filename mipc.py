@@ -32,7 +32,7 @@ def _recvall(sock, n):
         n -= len(s2)
     return s
         
-#### print exception
+#### print(exception)
 import traceback
 def _print_exception(e):
     traceback.print_exc()

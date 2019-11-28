@@ -127,7 +127,7 @@ def _make_dump():
             printer('%*s%s: %s', ind, ' ', name, str(obj))
 
     def _print(fmt, *args):
-        print fmt % args
+        print(fmt % args)
 
     def dump(self, printer=None, all=False):
         if not printer:

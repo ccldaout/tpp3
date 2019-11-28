@@ -82,11 +82,11 @@ class PortableCtype(object):
             if t not in self._PRIMITIVES and t not in cache:
                 cache.add(t)
                 t._show(cache)
-        print '%s(%s):' % (self._name, self._c_class.__name__)
+        print('%s(%s):' % (self._name, self._c_class.__name__))
         for fld in self._fields:
-            print '    %s : %s %s' % (fld[0], fld[1],
-                                      fld[2] if len(fld) == 3 else '')
-        print
+            print('    %s : %s %s' % (fld[0], fld[1],
+                                      fld[2] if len(fld) == 3 else ''))
+        print()
 
     def show(self):
         self._show(set())
@@ -262,8 +262,8 @@ if __name__ == '__main__':
         if not sys.flags.interactive:
             prms = (os.path.basename(sys.argv[0]).rstrip('.py'),
                     sys.argv[1] if len(sys.argv) == 2 else 'PRMMAP')
-            print 'Usage: python -m %s %s show' % prms
-            print '     : python -m %s %s member[.member...][=value] ...' % prms
+            print('Usage: python -m %s %s show' % prms)
+            print('     : python -m %s %s member[.member...][=value] ...' % prms)
     elif sys.argv[2] == 'show':
         with parameter(sys.argv[1]) as cmd:
             cmd.show()
@@ -279,7 +279,7 @@ if __name__ == '__main__':
             subexprs = expr.split('=')
             if len(subexprs) == 1:
                 obj, ident = lastref(subexprs[0])
-                print getattr(obj, ident)
+                print(getattr(obj, ident))
             elif len(subexprs) != 2:
                 raise TypeError('Invalid assignment expression: %s' % expr)
             else:

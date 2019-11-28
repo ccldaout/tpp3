@@ -18,7 +18,7 @@ with _opt as _def:
 ###     if dic is None:
 ###         dic = {}
 ###     if TPP_PRINT_SRC:
-###         print src
+###         print(src)
 ###     eval(compile(src, filename, 'exec'), dic)
 ###     return dic[fname]
 ### 
@@ -31,7 +31,7 @@ def gen_func(fname, src, dic=None, filename=None):
     if dic is None:
         dic = {}
     if _opt.TPP_PRINT_SRC:
-        print src
+        print(src)
     mn = '__maker'
     src = '''def %s(%s):
     %s

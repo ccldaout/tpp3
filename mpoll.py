@@ -84,7 +84,7 @@ else:
                     if fd in self._fobjs:
                         yield (self._fobjs[fd], flag)
                     else:
-                        print 'fd:%1d is not registerd (maybe closed).' % fd
+                        print('fd:%1d is not registerd (maybe closed).' % fd)
 
         def poll(self, timeout=-1):
             return list(self.ipoll(timeout))

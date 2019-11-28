@@ -47,7 +47,7 @@ class _object(object, metaclass=_type):
         for k, os in _object.__counts__.iteritems():
             n = len(os)
             if n or all_:
-                print '%8d %s' % (len(os), k)
+                print('%8d %s' % (len(os), k))
 
     @staticmethod
     def __clear_alived__():
