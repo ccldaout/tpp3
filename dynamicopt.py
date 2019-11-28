@@ -2,16 +2,16 @@
 
 # [ REMARK ]
 #
-#   tpp.ctypesutil depend on tpp.toolbox and tpp.toolbox depend on this
-#   tpp.dynamicopt. This dependencies means that this module can NOT use
-#   funcions of tpp.cytypeutil. As a result, this module use ORIGINAL CTYPES
-#   instread of tpp.ctypesutil.
+#   tpp3.ctypesutil depend on tpp3.toolbox and tpp3.toolbox depend on this
+#   tpp3.dynamicopt. This dependencies means that this module can NOT use
+#   funcions of tpp3.cytypeutil. As a result, this module use ORIGINAL CTYPES
+#   instread of tpp3.ctypesutil.
 
 # [CASE1] call `option` with FILE argument
 #
 #   # For application which know FILE to be mapped.
 #
-#   from tpp.dynamicopt import option
+#   from tpp3.dynamicopt import option
 #   with option(FILE) as define:
 #       define(KEY, TYPE, COMMENT[, INITIAL_VALUE)
 #	                :
@@ -24,7 +24,7 @@
 #   # (2) if opt has been called with FILE parameter previously, opt
 #   #     remember FILE and map it again in next with statement.
 #   
-#   from tpp.dynamicopt import option
+#   from tpp3.dynamicopt import option
 #   with option as define:
 #       define(KEY, TYPE, COMMENT[, INITIAL_VALUE)
 #	                :
@@ -149,7 +149,7 @@ class Option(object):
 
     def __open_excl(self, create_if):
         if '/' not in self.__name:
-            path = os.path.expanduser('~%s/.tpp/dynamicopt' % self.__user)
+            path = os.path.expanduser('~%s/.tpp3/dynamicopt' % self.__user)
             ___(os.makedirs)(path, 0755)
             path = os.path.join(path, self.__name)
         else:
@@ -160,9 +160,9 @@ class Option(object):
         fd = os.open(path, o_flags, 0666)
         if os.geteuid() == 0 and '/' not in self.__name and self.__user != '':
             optdir = os.path.dirname(path)
-            tppdir = os.path.dirname(optdir)
-            st = os.stat(os.path.dirname(tppdir))	# ~<user>
-            os.chown(tppdir, st.st_uid, st.st_gid)
+            tpp3dir = os.path.dirname(optdir)
+            st = os.stat(os.path.dirname(tpp3dir))	# ~<user>
+            os.chown(tpp3dir, st.st_uid, st.st_gid)
             os.chown(optdir, st.st_uid, st.st_gid)
             os.chown(path, st.st_uid, st.st_gid)
         ___(os.chmod)(path, 0666)		# os.fchmod is not exist in Pythonista
@@ -344,7 +344,7 @@ class Option(object):
         return idx is not None
 
 option = Option()
-with option('tpp.default'):
+with option('tpp3.default'):
     pass
 
 __all__ = ['option']

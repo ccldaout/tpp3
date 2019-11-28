@@ -6,12 +6,12 @@ import threading
 import traceback
 import time
 import types
-from tpp.dynamicopt import option as _opt
+from tpp3.dynamicopt import option as _opt
 
 with _opt as _def:
-    _def('TPP_PR_NAME', 'i', '[tpp.toolbox] toolbox.pr add self thread name', 1)
-    _def('TPP_EXC_DEBUG', 'i', '[tpp.toolbox] no_except print traceback', 0)
-    _def('TPP_BPR_NOLIMIT', 'i', "[tpp.toolbox] BufferedPrint do't omit string", 0)
+    _def('TPP_PR_NAME', 'i', '[tpp3.toolbox] toolbox.pr add self thread name', 1)
+    _def('TPP_EXC_DEBUG', 'i', '[tpp3.toolbox] no_except print traceback', 0)
+    _def('TPP_BPR_NOLIMIT', 'i', "[tpp3.toolbox] BufferedPrint do't omit string", 0)
 
 #----------------------------------------------------------------------------
 #                              Small utilities

@@ -9,12 +9,12 @@ import struct
 import sys
 import time
 import traceback
-import tpp.threadutil as tu
-import tpp.toolbox as tb
-from tpp.dynamicopt import option as _opt
+import tpp3.threadutil as tu
+import tpp3.toolbox as tb
+from tpp3.dynamicopt import option as _opt
 
 with _opt as _def:
-    _def('TPP_IPC_DEBUG', 'i', '[tpp.ipc] print message handled by packer', 0)
+    _def('TPP_IPC_DEBUG', 'i', '[tpp3.ipc] print message handled by packer', 0)
 
 ___ = tb.no_except
 

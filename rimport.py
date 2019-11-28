@@ -9,8 +9,8 @@ import sys
 import traceback
 from StringIO import StringIO
 import tarfile
-from tpp import rpc
-from tpp import toolbox as tb
+from tpp3 import rpc
+from tpp3 import toolbox as tb
 
 ___ = tb.no_except
 
@@ -52,7 +52,7 @@ class PkgService(object):
 
     def _get_exports(self):
         es = {}
-        dirs = ['~/.tpp/rimport/exports']
+        dirs = ['~/.tpp3/rimport/exports']
         try:
             with open(self._cfpath) as f:
                 conf = json.load(f)
@@ -109,7 +109,7 @@ class Finder(object):
                 self._conf = json.load(f)
             self._setup_svrcache()
         except:
-            self._conf = {'CACHE':'~/.tpp/rimport/cache',
+            self._conf = {'CACHE':'~/.tpp3/rimport/cache',
                           'TMO_s':0.2,
                           'SERVER':[('localhost', 55222)]}
             if not os.path.exists(conf):
@@ -128,7 +128,7 @@ class Finder(object):
                     self._svrcache[pkg] = tuple(addr)
 
     def _get_cache(self):
-        return tb.fn.eval(self._conf.get('CACHE', '~/.tpp/rimport/cache'))
+        return tb.fn.eval(self._conf.get('CACHE', '~/.tpp3/rimport/cache'))
 
     def _get_tmo_s(self):
         return self._conf.get('TMO_s', 0.2)
@@ -226,10 +226,10 @@ if __name__ == '__main__':
     addr = sys.argv[1].split(':')
     addr[1] = int(addr[1])
     if len(sys.argv) == 2:
-        conf = '~/.tpp/rimport/server.json'
+        conf = '~/.tpp3/rimport/server.json'
     else:
         conf = sys.argv[2]
     server(tuple(addr), conf)
 else:
-    conf = '~/.tpp/rimport/client.json'
+    conf = '~/.tpp3/rimport/client.json'
     sys.meta_path.append(Finder(conf))

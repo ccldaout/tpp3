@@ -3,10 +3,10 @@
 import collections
 import math
 import time
-from tpp.validation import enforce_keyword
-from tpp import threadutil as tu
-from tpp import toolbox as tb
-from tpp import ipc
+from tpp3.validation import enforce_keyword
+from tpp3 import threadutil as tu
+from tpp3 import toolbox as tb
+from tpp3 import ipc
 
 LOG_SIZE = 30
 

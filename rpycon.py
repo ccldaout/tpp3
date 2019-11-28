@@ -3,8 +3,8 @@
 
 import code
 import sys
-from tpp import rpc
-from tpp import threadutil as tu
+from tpp3 import rpc
+from tpp3 import threadutil as tu
 
 #----------------------------------------------------------------------------
 #                             server side code
