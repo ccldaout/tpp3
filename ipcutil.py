@@ -3,7 +3,6 @@
 import collections
 import math
 import time
-from tpp3.validation import enforce_keyword
 from tpp3 import threadutil as tu
 from tpp3 import toolbox as tb
 from tpp3 import ipc
@@ -112,8 +111,7 @@ class _ServerService(_ServiceBase):
 
 class _InteractiveBase(object):
 
-    @enforce_keyword
-    def __new__(cls, service,
+    def __new__(cls, service, *,
                 on_message=None, on_connected=None, on_disconnected=None,
                 attr2ev=None, quiet_messages=None,
                 logsize=None):
@@ -198,8 +196,7 @@ class _InteractiveBase(object):
 
 class InteractiveClient(_InteractiveBase):
 
-    @enforce_keyword
-    def __new__(cls, addr,
+    def __new__(cls, addr, *,
                 packer=None, recover=True, retry=True,
                 on_message=None, on_connected=None, on_disconnected=None,
                 attr2ev=None, quiet_messages=None,
@@ -226,8 +223,7 @@ class InteractiveClient(_InteractiveBase):
 
 class InteractiveServer(_InteractiveBase):
 
-    @enforce_keyword
-    def __new__(cls, addr,
+    def __new__(cls, addr, *,
                 packer=None,
                 on_message=None, on_connected=None, on_disconnected=None,
                 attr2ev=None, quiet_messages=None,
