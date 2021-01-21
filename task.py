@@ -2,7 +2,7 @@
 
 import sys
 import traceback
-from tpp3 import threadutil as tu
+from . import threadutil as tu
 
 #----------------------------------------------------------------------------
 #                              Task Operation

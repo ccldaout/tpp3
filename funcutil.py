@@ -3,10 +3,10 @@
 import inspect
 import functools
 import os
-from tpp3.dynamicopt import option as _opt
+from .dynamicopt import option as _opt
 
 with _opt as _def:
-    _def('TPP_PRINT_SRC', 'i', '[tpp3.funcutil] print generated source', 0)
+    _def('TPP_PRINT_SRC', 'i', '[tpp.funcutil] print generated source', 0)
 
 #----------------------------------------------------------------------------
 #

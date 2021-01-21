@@ -19,7 +19,7 @@ def _thread_getlock():
     return _thread.allocate_lock()
 
 #### poll
-from tpp3 import mpoll
+from . import mpoll
 
 #### socket.read
 def _recvall(sock, n):

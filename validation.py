@@ -2,12 +2,12 @@
 
 import inspect
 import os
-from tpp3 import funcutil as _fu
+from . import funcutil as _fu
 from ctypes import Array as _C_ArrayType
-from tpp3.dynamicopt import option as _opt
+from .dynamicopt import option as _opt
 
 with _opt as _def:
-    _def('TPP_VALIDATION_DISABLE', 'i', '[tpp3.validation] disable validation', 0)
+    _def('TPP_VALIDATION_DISABLE', 'i', '[tpp.validation] disable validation', 0)
 
 
 #----------------------------------------------------------------------------

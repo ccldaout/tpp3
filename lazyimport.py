@@ -4,10 +4,10 @@ import os
 import sys
 import types as types
 from threading import Lock, RLock
-from tpp3.dynamicopt import option as _opt
+from .dynamicopt import option as _opt
 
 with _opt as _def:
-    _def('TPP_LAZYIMPORT', 'i', '[tpp3.lazyimport] print lazyimport action', 0)
+    _def('TPP_LAZYIMPORT', 'i', '[tpp.lazyimport] print lazyimport action', 0)
 
 _NO_LAZYIMPORT = bool(os.getenv('TPP_NO_LAZYIMPORT'))
 

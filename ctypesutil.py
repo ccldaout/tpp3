@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from tpp3.ctypessyms import *
+from .ctypessyms import *
 
 # Enum class
 
-from tpp3.enumtype import EnumBase as _EnumBase
+from .enumtype import EnumBase as _EnumBase
 
 class _MetaEnum(type(ctypes.c_int32)):
     def __new__(mcls, name, bases, dic):
@@ -92,7 +92,7 @@ def analyze_ctypes(ctype):
 # addtional methods
 
 def _make_dump():
-    from tpp3.toolbox import BufferedPrint
+    from .toolbox import BufferedPrint
 
     bufferedprint = BufferedPrint()
 

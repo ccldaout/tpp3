@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import inspect
-from tpp3 import ipc
-from tpp3 import toolbox as tb
-from tpp3 import threadutil as tu
-from tpp3 import funcutil as fu
-from tpp3.ctypesutil import array as _c_array_extension
+from . import ipc
+from . import toolbox as tb
+from . import threadutil as tu
+from . import funcutil as fu
+from .ctypesutil import array as _c_array_extension
 from ctypes import Array as _C_ArrayType
 
 ___ = tb.no_except

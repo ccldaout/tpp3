@@ -3,9 +3,9 @@
 import collections
 import math
 import time
-from tpp3 import threadutil as tu
-from tpp3 import toolbox as tb
-from tpp3 import ipc
+from . import threadutil as tu
+from . import toolbox as tb
+from . import ipc
 
 LOG_SIZE = 30
 

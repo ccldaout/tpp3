@@ -4,24 +4,24 @@
 #
 #   # for application which know CTYPES_CLASS
 #
-#   from tpp3.dynamicprm import parameter
+#   from .dynamicprm import parameter
 #   parameter(FILE, ctypes_class)
 #
 # [CASE2] call parameter without CTYPES_CLASS argument
 #
 #   # for outside of application
 #
-#   from tpp3.dynamicprm import parameter
+#   from .dynamicprm import parameter
 #   with parameter(FILE) as cmd:
 #     cmd.show()
 
 import _pickle
 import mmap
 import os
-from tpp3 import ctypesutil as cu
-from tpp3.ctypessyms import *
-from tpp3.funcutil import Symbols
-from tpp3.toolbox import alignP2, no_except as ___
+from . import ctypesutil as cu
+from .ctypessyms import *
+from .funcutil import Symbols
+from .toolbox import alignP2, no_except as ___
 
 
 class PortableCtype(object):
@@ -163,7 +163,7 @@ class Parameter(object):
 
     def __open(self, name, user, create_if):
         if '/' not in name:
-            path = os.path.expanduser('~/.tpp3/dynamicprm' % user)
+            path = os.path.expanduser('~/.tpp/dynamicprm' % user)
             ___(os.makedirs)(path, 0o755)
             path = os.path.join(path, name)
         else:
@@ -174,9 +174,9 @@ class Parameter(object):
         fd = os.open(path, o_flags, 0o666)
         if os.geteuid() == 0 and '/' not in name and user != '':
             optdir = os.path.dirname(path)
-            tpp3dir = os.path.dirname(optdir)
-            st = os.stat(os.path.dirname(tpp3dir))	# ~<user>
-            os.chown(tpp3dir, st.st_uid, st.st_gid)
+            tppdir = os.path.dirname(optdir)
+            st = os.stat(os.path.dirname(tppdir))	# ~<user>
+            os.chown(tppdir, st.st_uid, st.st_gid)
             os.chown(optdir, st.st_uid, st.st_gid)
             os.chown(path, st.st_uid, st.st_gid)
         ___(os.fchmod)(fd, 0o666)
