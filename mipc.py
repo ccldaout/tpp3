@@ -10,7 +10,7 @@ import sys
 #----------------------------------------------------------------------------
 
 #### thread
-import thread as _thread
+import _thread as _thread
 
 def _thread_start(func, args, **kwargs):
     return _thread.start_new_thread(func, args)

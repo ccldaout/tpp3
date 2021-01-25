@@ -273,7 +273,7 @@ class bg(object):
                 self.__task = None
                 self.result = r.result
                 return self.result
-            raise r.result, None, r.traceback
+            raise r.result.with_traceback(r.traceback)
         return super().__getattr__(name)
 
 #----------------------------------------------------------------------------
@@ -361,11 +361,11 @@ class DAGTasks(object):
             ns[n] = set(n.depend_on())
         while True:
             rmc = 0
-            for n, depon in ns.items():
+            for n, depon in list(ns.items()):
                 if not depon:
                     del ns[n]
                     rmc += 1
-                    for n2, depon2 in ns.items():
+                    for n2, depon2 in list(ns.items()):
                         if n in depon2:
                             depon2.remove(n)
             if rmc == 0:

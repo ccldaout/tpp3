@@ -11,7 +11,7 @@ class _MetaEnum(type(ctypes.c_int32)):
         cls = super().__new__(mcls, name, bases, dic)
         cls2 = type(_EnumBase)(name+'_', (_EnumBase,), dic)
         cls._enumtype_ = cls2
-        for k, v in dic.items():
+        for k, v in list(dic.items()):
             if isinstance(v, int):
                 setattr(cls, k, getattr(cls2, k))
         return cls
@@ -38,14 +38,14 @@ class Enum(ctypes.c_int32, metaclass=_MetaEnum):
         return self.value
 
     def __long__(self):
-        return long(self.value)
+        return int(self.value)
 
     def __float__(self):
         return float(self.value)
 
     def __repr__(self):
         i_self = int(self)
-        for k, v in type(self).__dict__.items():
+        for k, v in list(type(self).__dict__.items()):
             if v == i_self:
                 return '%s(%d)' % (k, i_self)
         return '?<%s>(%d)' % (type(self).__name__, i_self)
@@ -169,7 +169,7 @@ def decode(self, eobj):
             for idx, e in enumerate(eobj):
                 self[idx] = e
     elif isinstance(eobj, dict):
-        for k, e in eobj.items():
+        for k, e in list(eobj.items()):
             if isinstance(e, (list, dict)):
                 decode(getattr(self, k), e)
             else:

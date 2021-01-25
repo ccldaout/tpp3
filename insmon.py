@@ -3,7 +3,7 @@ import gc
 import os
 import sys
 import weakref
-import __builtin__
+import builtins
 
 for _m in ['warnings', 'abc'] + os.getenv('INSMON_ERR_MODULES', '').split(' '):
     if _m:
@@ -44,7 +44,7 @@ class _object(object, metaclass=_type):
     @staticmethod
     def __show_alived__(all_=False):
         _object.__gc_collect__()
-        for k, os in _object.__counts__.items():
+        for k, os in list(_object.__counts__.items()):
             n = len(os)
             if n or all_:
                 print('%8d %s' % (len(os), k))
@@ -54,10 +54,10 @@ class _object(object, metaclass=_type):
         _object.__counts__ = {}
 
 def enable():
-    __builtin__.type = _type
-    __builtin__.object = _object
-    __builtin__.show_alived = _object.__show_alived__
-    __builtin__.clear_alived = _object.__clear_alived__
+    builtins.type = _type
+    builtins.object = _object
+    builtins.show_alived = _object.__show_alived__
+    builtins.clear_alived = _object.__clear_alived__
     atexit.register(_object.__show_alived__)
 
 __all__ = []
@@ -69,6 +69,6 @@ if __name__ == '__main__':
     if sys.argv:
         _argv0 = sys.argv[0]
         del sys
-        execfile(_argv0)
+        exec(compile(open(_argv0, "rb").read(), _argv0, 'exec'))
     else:
         del sys

@@ -16,7 +16,7 @@ class _EnumMeta(type):
 
     def __new__(mcls, clsname, bases, dic):
         cls = super().__new__(mcls, clsname, bases, dic)
-        for k, v in dic.items():
+        for k, v in list(dic.items()):
             if isinstance(v, int):
                 setattr(cls, k, cls(v))
         return cls
@@ -24,7 +24,7 @@ class _EnumMeta(type):
 class EnumBase(int, metaclass=_EnumMeta):
 
     def __repr__(self):
-        for k, v in type(self).__dict__.items():
+        for k, v in list(type(self).__dict__.items()):
             if v == self:
                 return '%s(%d)' % (k, v)
         return '?<%s>(%d)' % (type(self).__name__, self)

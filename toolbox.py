@@ -99,7 +99,7 @@ class Delegate(object):
     def __contains__(self, func):
         return func in self._funcs
 
-    def __nonzero__(self):
+    def __bool__(self):
         return bool(self._funcs)
 
     def __len__(self):
@@ -127,7 +127,7 @@ class Counter(object):
             return self._v
 
 class Null(object):
-    def __nonzero__(self):
+    def __bool__(self):
         return False
     def __call__(self, *args):
         return self
@@ -153,7 +153,7 @@ class Bomb(object):
         self = super().__new__(cls)
         super().__setattr__('_exc', exc)
         return self
-    def __nonzero__(self):
+    def __bool__(self):
         raise self._exc
     def __call__(self, *args):
         raise self._exc
@@ -229,7 +229,7 @@ class OnetimeMsgBox(object):
         return self
 
     def __iter__(self):
-        return self._mbox.items()
+        return list(self._mbox.items())
 
     def reserve(self, key = None):
         with self._cond:

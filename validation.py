@@ -145,7 +145,7 @@ class _ArgChecker(object):
     def __init__(self, **keywords):
         self._check_all = None
         self._db = {}
-        for key, chk in keywords.items():
+        for key, chk in list(keywords.items()):
             if key == '_':
                 if not callable(chk):
                     raise TypeError('Parameter of %s must be callable.' % key)
@@ -156,7 +156,7 @@ class _ArgChecker(object):
                 self._db[key] = chk
 
     def __call__(self, argdef, argdic):
-        for key, val in argdic.items():
+        for key, val in list(argdic.items()):
             if key in self._db:
                 self._db[key](key, val)
         if self._check_all:
@@ -171,7 +171,7 @@ class _ArgChecker(object):
                     chk = self._db[a]
                     for s in chk.doc(a, indent):
                         yield s
-            for key, chk in self._db.items():
+            for key, chk in list(self._db.items()):
                 if key not in args:
                     for s in chk.doc(key, indent):
                         yield s

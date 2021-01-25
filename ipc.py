@@ -321,7 +321,7 @@ class IPCPort(object):
             if isinstance(e, NoMoreData):
                 self._service.handle_DISCONNECTED(self)
             else:
-                traceback.print_exception(type(e), e, sys.exc_traceback)
+                traceback.print_exception(type(e), e, sys.exc_info()[2])
                 self._service.handle_SOCKERROR(self)
             return e
 

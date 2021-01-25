@@ -107,7 +107,7 @@ class _ProxyBackendManager(object):
             if isinstance(v, _C_ArrayType):
                 _c_array_extension(type(v))
             elif isinstance(v, dict):
-                v = dict([(k, _encode(e)) for k, e in v.items()])
+                v = dict([(k, _encode(e)) for k, e in list(v.items())])
             elif isinstance(v, (list, tuple)):
                 v = [_encode(e) for e in v]
             return v
@@ -119,7 +119,7 @@ class _ProxyBackendManager(object):
             if isinstance(v, _ProxyPackage):
                 return v.decode(port)
             if isinstance(v, dict):
-                v = dict([(k, _decode(e)) for k, e in v.items()])
+                v = dict([(k, _decode(e)) for k, e in list(v.items())])
             elif isinstance(v, (list, tuple)):
                 v = [_decode(e) for e in v]
             return v

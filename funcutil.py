@@ -35,12 +35,12 @@ def gen_func(fname, src, dic=None, filename=None):
     mn = '__maker'
     src = '''def %s(%s):
     %s
-    return %s''' % (mn, ', '.join(dic.keys()),
+    return %s''' % (mn, ', '.join(list(dic.keys())),
                     src.replace('\n', '\n    '),
                     fname)
     mndic = {}
     eval(compile(src, filename, 'exec'), mndic)
-    return mndic[mn](*dic.values())
+    return mndic[mn](*list(dic.values()))
 
 #----------------------------------------------------------------------------
 #
@@ -83,7 +83,7 @@ class Arguments(object):
     @property
     def optional_args(self):
         if self.defaults:
-            return zip(self.args[-len(self.defaults):], self.defaults)
+            return list(zip(self.args[-len(self.defaults):], self.defaults))
         else:
             return []
 

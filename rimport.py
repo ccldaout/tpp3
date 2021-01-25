@@ -71,7 +71,7 @@ class PkgService(object):
 
     @rpc.export
     def get_exports(self):
-        return self._get_exports().keys()
+        return list(self._get_exports().keys())
 
     @rpc.export
     def get_serial(self, pkgname):

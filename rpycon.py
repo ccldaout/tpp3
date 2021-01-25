@@ -91,7 +91,7 @@ def client(addr):
         while True:
             prompt = ps1
             while True:
-                s = raw_input(prompt)
+                s = eval(input(prompt))
                 if not api.input(s):
                     break
                 prompt = ps2
