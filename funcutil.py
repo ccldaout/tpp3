@@ -71,7 +71,7 @@ def wrap(original_f, sig_doc=True):
 
 class Arguments(object):
     def __init__(self, f):
-        self.args, self.varargs, self.keywords, self.defaults = inspect.getargspec(f)
+        self.args, self.varargs, self.keywords, self.defaults, *rests = inspect.getfullargspec(f)
 
     @property
     def mandatory_args(self):

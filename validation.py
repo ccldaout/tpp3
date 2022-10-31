@@ -165,7 +165,7 @@ class _ArgChecker(object):
     def modify_doc(self, f):
         indent = 8
         def _doc():
-            args = inspect.getargspec(f).args
+            args = inspect.getfullargspec(f).args
             for a in args:
                 if a in self._db:
                     chk = self._db[a]
