@@ -5,6 +5,9 @@ import struct
 import sys
 
 
+PICKLE_PROTOCOL = 4
+
+
 #----------------------------------------------------------------------------
 #                        machine dependent functions
 #----------------------------------------------------------------------------
@@ -101,7 +104,7 @@ class JSONPacker(DumpPackerBase):
 
 class PyPacker(DumpPackerBase):
     import _pickle
-    dumps = staticmethod(lambda msg: _pickle.dumps(msg, _pickle.HIGHEST_PROTOCOL))
+    dumps = staticmethod(lambda msg: _pickle.dumps(msg, PICKLE_PROTOCOL))
     loads = staticmethod(_pickle.loads)
 
 class UDPDumpPackerBase(DumpPackerBase):

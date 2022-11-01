@@ -18,6 +18,10 @@ with _opt as _def:
 
 ___ = tb.no_except
 
+
+PICKLE_PROTOCOL = 4
+
+
 #----------------------------------------------------------------------------
 #                          simple socket wrappter
 #----------------------------------------------------------------------------
@@ -110,7 +114,7 @@ class CSocket(object):
     def recv_x(self, size):
         # return: (data, rest_size)
         # exception: socket.timeout, socket.error
-        data = ''
+        data = bytes()
         tmo_s = self.init_recv_tmo_s
         while size > 0:
             if (tmo_s is not None) and (not self.wait_readable(tmo_s)):
@@ -190,7 +194,7 @@ class PyPacker(PackerBase):
     MAX_PACKED = (1024*1024*16)
 
     def pack(self, msg):
-        s = _pickle.dumps(msg, _pickle.HIGHEST_PROTOCOL)
+        s = _pickle.dumps(msg, PICKLE_PROTOCOL)
         n = len(s)
         return struct.pack('<i', n)+s, n+4
         
