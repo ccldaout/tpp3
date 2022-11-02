@@ -105,7 +105,7 @@ def _make_dump():
             return (len(cdata) == 0)
         if csize == 0:
             csize = c_sizeof(cdata)
-        return (c_string_at(c_addressof(cdata), csize).count('\x00') == csize)
+        return (c_string_at(c_addressof(cdata), csize).count(b'\x00') == csize)
 
     def _dump(ind, name, obj, printer):
         if name[:2] == '__':
@@ -115,8 +115,9 @@ def _make_dump():
             for m in obj._fields_:
                 _dump(ind+2, m[0], getattr(obj, m[0]), printer)
             printer('%*s}', ind, ' ')
-        elif isinstance(obj, str):
-            printer('%*s%s: <%s>', ind, ' ', name, obj.encode('string_escape'))
+        elif isinstance(obj, bytes):
+            #printer('%*s%s: <%s>', ind, ' ', name, obj.decode('utf-8'))
+            printer('%*s%s: <%s>', ind, ' ', name, obj)
         elif hasattr(obj, '__len__'):
             last = len(obj)-1
             for i in range(len(obj)):

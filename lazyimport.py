@@ -3,6 +3,7 @@
 import os
 import sys
 import types as types
+import importlib.abc
 from threading import Lock, RLock
 from .dynamicopt import option as _opt
 
@@ -16,13 +17,14 @@ class module(types.ModuleType):
 
 class LazyModule(module):
 
-    def __new__(cls, name, lazyfinder=None):
+    def __new__(cls, name, lazyfinder=None, paths=None):
         if _opt.TPP_LAZYIMPORT:
             print('[ lazyimport ] -lazy-', name)
         self = super().__new__(cls, name, '')
         self.__lock = RLock()
         self.__loaded = False
         self.__lazyfinder = lazyfinder
+        self.__path__ = paths
         return self
 
     def __init__(self, name, *args, **kwargs):
@@ -36,7 +38,7 @@ class LazyModule(module):
         if name in sys.modules:
             del sys.modules[name]
         if _opt.TPP_LAZYIMPORT:
-            print(('[ lazyimport ] import %s (access to %s)' % (name, attr)))
+            print('[ lazyimport ] import %s (access to %s)' % (name, attr))
         # In order to get module object referrenced by 'name' parameter,
         # we must pass non-emply list as 4-th argument. If not, __import__ return
         # top module object in name.
@@ -61,19 +63,20 @@ class LazyModule(module):
                 return self.__import(attr)
         return super().__getattribute__(attr)
 
-class LazyLoader(object):
-    _slots_ = ('_lazyfinder')
+class LazyLoader(importlib.abc.Loader):
+    _slots_ = ('_lazyfinder', '_paths')
 
-    def __init__(self, lazyfinder):
+    def __init__(self, lazyfinder, paths):
         self._lazyfinder = lazyfinder
+        self._paths = paths
 
     def load_module(self, name):
         if name not in sys.modules:
-            m = LazyModule(name, self._lazyfinder)
+            m = LazyModule(name, self._lazyfinder, self._paths)
             sys.modules[name] = m
         return sys.modules[name]
         
-class LazyFinder(object):
+class LazyFinder(importlib.abc.MetaPathFinder):
     _slots_ = ('_lock', '_mods', '_roots', '_excepts')
 
     def __init__(self):
@@ -123,7 +126,7 @@ class LazyFinder(object):
             return False
         with self._lock:
             if do_lazy():
-                return LazyLoader(self)
+                return LazyLoader(self, paths)
         return None
 
 _lazyfinder = LazyFinder()
@@ -131,6 +134,7 @@ register = _lazyfinder.register
 register_root = _lazyfinder.register_root
 register_except = _lazyfinder.remove
 
-sys.meta_path.append(_lazyfinder)
+#sys.meta_path.append(_lazyfinder)
+sys.meta_path.insert(0, _lazyfinder)
 
 __all__ = ['register']

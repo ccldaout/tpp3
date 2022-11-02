@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import io
 import os
 import os.path
 import threading
@@ -151,7 +152,7 @@ class Bomb(object):
 
     def __new__(cls, exc):
         self = super().__new__(cls)
-        super().__setattr__('_exc', exc)
+        super().__setattr__(self, '_exc', exc)
         return self
     def __bool__(self):
         raise self._exc
@@ -285,7 +286,7 @@ class BufferedPrint(object):
         self = super().__new__(cls)
         self._size_b = size_b if size_b else 8192
         self.printer = printer if printer else _printer
-        self._buffer = bytearray(self._size_b)
+        self._buffer = io.StringIO()
         self._b_off = 0
         self._lock = threading.Lock()
         self.limit_calls = 0x7fffffff
@@ -300,19 +301,20 @@ class BufferedPrint(object):
         s = fmt % args
         sn = len(s)
         bn = self._size_b - self._b_off
-        if sn + 1 > bn:
+        if sn > bn:
             self.flush()
             self.printer("%s", s)
             return
         if self._b_off:
-            self._buffer[self._b_off] = '\n'
+            self._buffer.write('\n')
             self._b_off += 1
-        self._buffer[self._b_off:self._b_off + sn] = s
+        self._buffer.write(s)
         self._b_off += sn
                 
     def flush(self):
         if self._b_off:
-            self.printer("%s", self._buffer[:self._b_off])
+            self.printer("%s", self._buffer.getvalue())
+            self._buffer.truncate(0)
             self._b_off = 0
 
     def __enter__(self):

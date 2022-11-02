@@ -91,12 +91,17 @@ def client(addr):
         while True:
             prompt = ps1
             while True:
-                s = eval(input(prompt))
+                s = input(prompt)
                 if not api.input(s):
                     break
                 prompt = ps2
+    except EOFError as e:
+        print()
     except:
+        raise
+    finally:
         api.detach()
+
 
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
