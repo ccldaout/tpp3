@@ -42,12 +42,14 @@ class LazyModule(module):
         # In order to get module object referrenced by 'name' parameter,
         # we must pass non-emply list as 4-th argument. If not, __import__ return
         # top module object in name.
-        m = __import__(name, globals(), locals(), ['__name__'])
-        self.__dict__.update(m.__dict__)
         try:
-            v = getattr(self, attr)
-        finally:
-            self.__class__ = module
+            m = __import__(name, globals(), locals(), ['__name__'])
+        except:
+            traceback.print_exc()
+            raise ImportError(name)
+        self.__dict__.update(m.__dict__)
+        v = getattr(self, attr)
+        self.__class__ = module
         return v
 
     def __getattribute__(self, attr):
