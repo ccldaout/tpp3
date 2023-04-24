@@ -314,7 +314,9 @@ class BufferedPrint(object):
     def flush(self):
         if self._b_off:
             self.printer("%s", self._buffer.getvalue())
-            self._buffer.truncate(0)
+            ## [BUG???] garbage remain after io.StringIO.truncate(0)
+            ##          self._buffer.truncate(0)
+            self._buffer = io.StringIO()
             self._b_off = 0
 
     def __enter__(self):
