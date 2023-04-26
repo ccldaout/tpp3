@@ -34,7 +34,7 @@ class LazyModule(module):
         self.__loaded = True
         name = self.__name__
         if self.__lazyfinder:
-            self.__lazyfinder.remove(name)
+            self.__lazyfinder.imported(name)
         if name in sys.modules:
             del sys.modules[name]
         if _opt.TPP_LAZYIMPORT:
@@ -86,6 +86,7 @@ class LazyFinder(importlib.abc.MetaPathFinder):
         self._mods = set()
         self._roots = set()
         self._excepts = set()
+        self._imported = set()
 
     def register(self, modname):
         with self._lock:
@@ -95,6 +96,12 @@ class LazyFinder(importlib.abc.MetaPathFinder):
         with self._lock:
             self._roots.add(rootmod)
             self._mods.add(rootmod)
+
+    def imported(self, modname):
+        with self._lock:
+            self._imported.add(modname)
+            if modname in self._mods:
+                self._mods.remove(modname)
 
     def remove(self, modname):
         with self._lock:
@@ -117,7 +124,13 @@ class LazyFinder(importlib.abc.MetaPathFinder):
         def do_lazy():
             if _NO_LAZYIMPORT:
                 return False
-            if modname in self._excepts:
+            for e in self._excepts:
+                if (modname == e or
+                    (modname.startswith(e) and modname[len(e)] == '.')):
+                    if _opt.TPP_LAZYIMPORT:
+                        print('[ lazyimport ] import %s (except)' % modname)
+                    return False
+            if modname in self._imported:
                 return False
             if modname in self._mods:
                 return check()
