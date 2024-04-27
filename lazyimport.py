@@ -4,6 +4,7 @@ import os
 import sys
 import types as types
 import importlib.abc
+import importlib.machinery
 from threading import Lock, RLock
 from .dynamicopt import option as _opt
 
@@ -72,12 +73,17 @@ class LazyLoader(importlib.abc.Loader):
         self._lazyfinder = lazyfinder
         self._paths = paths
 
-    def load_module(self, name):
+    def create_module(self, spec):
+        name = spec.name
         if name not in sys.modules:
             m = LazyModule(name, self._lazyfinder, self._paths)
             sys.modules[name] = m
         return sys.modules[name]
         
+    def exec_module(self, module):
+        pass
+
+
 class LazyFinder(importlib.abc.MetaPathFinder):
     _slots_ = ('_lock', '_mods', '_roots', '_excepts')
 
@@ -109,16 +115,18 @@ class LazyFinder(importlib.abc.MetaPathFinder):
             if modname in self._mods:
                 self._mods.remove(modname)
 
-    def find_module(self, modname, paths):
+    def find_spec(self, modname, paths, target=None):
         def check():
             if paths is None:
                 return False
             lastname = modname.split('.')[-1]
             for p in paths:
                 for sfx in ['.py', '.pyc', '.so']:
-                    if os.path.exists(os.path.join(p, lastname + sfx)):
+                    mp = os.path.join(p, lastname + sfx)
+                    if os.path.exists(mp):
                         return True
-                if os.path.isdir(os.path.join(p, lastname)):
+                mp = os.path.join(p, lastname)
+                if os.path.isdir(mp):
                     return True
             return False
         def do_lazy():
@@ -141,7 +149,7 @@ class LazyFinder(importlib.abc.MetaPathFinder):
             return False
         with self._lock:
             if do_lazy():
-                return LazyLoader(self, paths)
+                return importlib.machinery.ModuleSpec(modname, LazyLoader(self, paths))
         return None
 
 _lazyfinder = LazyFinder()
