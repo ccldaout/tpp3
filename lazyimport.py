@@ -13,6 +13,9 @@ with _opt as _def:
 
 _NO_LAZYIMPORT = bool(os.getenv('TPP_NO_LAZYIMPORT'))
 
+def p_(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
 class module(types.ModuleType):
     pass
 
@@ -20,7 +23,7 @@ class LazyModule(module):
 
     def __new__(cls, name, lazyfinder=None, paths=None):
         if _opt.TPP_LAZYIMPORT:
-            print('[ lazyimport ] -lazy-', name)
+            p_('[ lazyimport ] -lazy-', name)
         self = super().__new__(cls, name, '')
         self.__lock = RLock()
         self.__loaded = False
@@ -39,7 +42,7 @@ class LazyModule(module):
         if name in sys.modules:
             del sys.modules[name]
         if _opt.TPP_LAZYIMPORT:
-            print('[ lazyimport ] import %s (access to %s)' % (name, attr))
+            p_('[ lazyimport ] import %s (access to %s)' % (name, attr))
         # In order to get module object referrenced by 'name' parameter,
         # we must pass non-emply list as 4-th argument. If not, __import__ return
         # top module object in name.
@@ -136,7 +139,7 @@ class LazyFinder(importlib.abc.MetaPathFinder):
                 if (modname == e or
                     (modname.startswith(e) and modname[len(e)] == '.')):
                     if _opt.TPP_LAZYIMPORT:
-                        print('[ lazyimport ] import %s (except)' % modname)
+                        p_('[ lazyimport ] import %s (except)' % modname)
                     return False
             if modname in self._imported:
                 return False
